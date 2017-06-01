@@ -1,0 +1,167 @@
+% This is LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+%
+\documentclass{llncs}
+%
+\usepackage{makeidx}  % allows for indexgeneration
+%
+\begin{document}
+
+\title{Automatic Estimation of the Optic Nerve Sheat Diameter from Ultrasound Images}
+%
+\titlerunning{Automatic Opti Nerve Sheat Diameter Estimation} % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{}
+
+%
+\authorrunning{} % abbreviated author list (for running head)
+%
+%%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{}
+%
+\institute{Kitware Inc, Carrboro NC 27510, USA,\\
+\email{}
+}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+\end{abstract}
+%
+\section{Introduction}
+Kitware seeks to harness the integration of machine learning algorithms and
+rugged, portable ultrasound devices to develop an easy-to-use system that
+enables emergency responders to quickly assess the severity of a patient's
+injuries at accidents and in remote environments in which expert medical
+personnel and advanced diagnostic equipment are not readily available.￼
+
+A driving application of our point-of-care, computer-assisted ultrasound system
+is in-field traumatic brain injury (TBI) assessment via the detection of
+increased intracranial pressure. Delayed treatment of increased intracranial
+pressure can cause temporary or permanent brain damage or even long-term coma
+and death.  For example, it has been shown that acute subdural hematomas in
+severe TBI patients cause significant increase in intracranial pressure, are
+associated with 90\% mortality if detected and treated more than 4 hours after
+injury, and yet are associated with only 30\% mortality if detected and treated
+earlier.
+
+Our system detects elevated intracranial pressure associated with TBI by
+automatically measuring the diameter of the optic nerve sheath, a known
+indicator of elevated intracranial pressure.  
+
+\section{Algorithm}
+In a clinical setting the optic nerve sheath diameter is measured by ocular
+ultrasound (see Image). An ultrasound image is acquired and the physicians
+manually measures the diameter of optic nerve sheath at a location 3mm behind
+the retina. Acquiring such images and making these measurements is challenging
+and time consuming task.
+
+Our algorithm reports estimates of the optic nerve sheath diameter in near real
+time as an ultrasound probe is swept across the closed eye of a patient. At a
+high level, the algorithm proceeds by locating the orb of the eye through
+registration of an ellipse with the largest dark circle in the image data. From
+the ellipse an approximate location of the optic nerve is constructed and used
+to fit two bars to the walls of the optic nerve. This high-level description
+leaves out several intermediate steps such as those involving image smoothing,
+morphological operations, and distance transforms, that are required to achieve
+good registration results. Below are images of results of the fitting procedure
+which illustrate that the algorithm runs on a wide variety of images with
+differing quality.
+
+
+This algorithm is now integrated into a user-friendly interface and performs
+estimates at 4 frames per second. Depending on the ultrasound probe, the
+algorithm can be simplified by skipping the eye estimation step to run at
+around 20 frames per second.
+
+\section{Evaluation}
+
+To evaluate the quality of the estimates we had 13 volunteers ranging from
+Kitware engineers to medical professionals annotate 23 ultrasound images.  The
+image below shows a linear fit of the automatic estimated diameter from two
+different parameter settings of the algorithm as compared to a medical
+professional. The automatic estimates had an R2 of around 0.9 and 0.8,
+respectively. The mean intra correlations among medical professionals was 0.84.
+Thus, on this small sample size the automatic estimates perform on par with
+medical experts. The correlation among experts matches results of previous
+studies.
+
+For additional evaluation of the performance of the algorithm we built a
+phantom from gelatine in which 3D-printed “optic nerves” (plastic discs) of
+known diameter can be embedded under gelatine orbs and imaged, producing
+ultrasound images that look surprising like clinical ocular ultrasound images.
+
+The goal of this evaluation is to check if an accurate estimate of the optic
+nerve is possible with the proposed algorithm. In this controlled setting we
+first located the optic nerve using the ultrasound. Once a good image of the
+optic nerve was achieved the automatic estimation process was started and run
+interactively for about 10 seconds which resulted in approximately 40 to 50
+optic nerve sheath diameter estimates. The table below shows that the means of
+the automatic estimates are within less than +/- 0.5mm  with a relatively tight
+distribution of estimates around the ground truth diameter. A study on
+intra-operator variations on the same type of phantom, reports standard
+deviations of the measurements ranging from 0.25 to 0.6 mm depending on
+diameter size.  
+
+\section{Conclusion}
+
+The results presented indicate that the algorithm performs well in a controlled
+setting.  A retrospective analysis of clinical images indicate that our system
+performs similar to an expert, and a phantom study using 3D printed optic
+nerves of known diameter suggests that our system is accurate.
+
+The next step is to integrate an image quality estimation algorithm, so that
+high quality images of the optic nerve can be automatically identified as a
+probe is swept over the eye.   This will eliminate the need for the operator to
+ever view, interpret, or make measurements on an ultrasound image when using it
+to assess a dilated optic nerve sheath, as indicative of increased intracranial
+pressure.
+
+Our long term goal is a system that can be used by novice operators, with
+minimal ultrasound experience.   The system will automatically report when a
+sufficient image has been acquired, and it will automatically determine if the
+diameter of the optic nerve is greater than 5mm, thereby indicating increased
+intracranial pressure associated with mild or more severe TBI.
+
+
+%
+% ---- Bibliography ----
+%
+\begin{thebibliography}{}
+%
+\bibitem[1980]{2clar:eke}
+Clarke, F., Ekeland, I.:
+Nonlinear oscillations and
+boundary-value problems for Hamiltonian systems.
+Arch. Rat. Mech. Anal. 78, 315--333 (1982)
+
+\bibitem[1981]{2clar:eke:2}
+Clarke, F., Ekeland, I.:
+Solutions p\'{e}riodiques, du
+p\'{e}riode donn\'{e}e, des \'{e}quations hamiltoniennes.
+Note CRAS Paris 287, 1013--1015 (1978)
+
+\bibitem[1982]{2mich:tar}
+Michalek, R., Tarantello, G.:
+Subharmonic solutions with prescribed minimal
+period for nonautonomous Hamiltonian systems.
+J. Diff. Eq. 72, 28--55 (1988)
+
+\bibitem[1983]{2tar}
+Tarantello, G.:
+Subharmonic solutions for Hamiltonian
+systems via a $\bbbz_{p}$ pseudoindex theory.
+Annali di Matematica Pura (to appear)
+
+\bibitem[1985]{2rab}
+Rabinowitz, P.:
+On subharmonic solutions of a Hamiltonian system.
+Comm. Pure Appl. Math. 33, 609--633 (1980)
+
+\end{thebibliography}
+
+\end{document}

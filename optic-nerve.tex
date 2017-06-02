@@ -33,25 +33,28 @@
 \end{abstract}
 %
 \section{Introduction}
-Kitware seeks to harness the integration of machine learning algorithms and
-rugged, portable ultrasound devices to develop an easy-to-use system that
-enables emergency responders to quickly assess the severity of a patient's
-injuries at accidents and in remote environments in which expert medical
-personnel and advanced diagnostic equipment are not readily available.￼
+Portable ultrasound techonlogy is uniquley well suited to develop easy-to-use
+system that enables emergency responders to quickly assess the severity of a
+patient's injuries at accidents and in remote environments in which expert
+medical imaging personnel and advanced imaging equipment are not readily
+available.
 
-A driving application of our point-of-care, computer-assisted ultrasound system
-is in-field traumatic brain injury (TBI) assessment via the detection of
-increased intracranial pressure. Delayed treatment of increased intracranial
-pressure can cause temporary or permanent brain damage or even long-term coma
-and death.  For example, it has been shown that acute subdural hematomas in
-severe TBI patients cause significant increase in intracranial pressure, are
-associated with 90\% mortality if detected and treated more than 4 hours after
-injury, and yet are associated with only 30\% mortality if detected and treated
-earlier.
+This paper considers the application of point-of-care, computer-assisted
+ultrasound system is for in-field traumatic brain injury (TBI) assessment via
+the detection of increased intracranial pressure. Delayed treatment of
+increased intracranial pressure can cause temporary or permanent brain damage
+or even long-term coma and death.  For example, it has been shown that acute
+subdural hematomas in severe TBI patients cause significant increase in
+intracranial pressure, are associated with 90\% mortality if detected and
+treated more than 4 hours after injury, and yet are associated with only 30\%
+mortality if detected and treated earlier.
 
 Our system detects elevated intracranial pressure associated with TBI by
 automatically measuring the diameter of the optic nerve sheath, a known
 indicator of elevated intracranial pressure.  
+
+\section{Related Work}
+
 
 \section{Algorithm}
 In a clinical setting the optic nerve sheath diameter is measured by ocular
@@ -79,7 +82,6 @@ algorithm can be simplified by skipping the eye estimation step to run at
 around 20 frames per second.
 
 \section{Evaluation}
-
 To evaluate the quality of the estimates we had 13 volunteers ranging from
 Kitware engineers to medical professionals annotate 23 ultrasound images.  The
 image below shows a linear fit of the automatic estimated diameter from two
@@ -108,7 +110,6 @@ deviations of the measurements ranging from 0.25 to 0.6 mm depending on
 diameter size.  
 
 \section{Conclusion}
-
 The results presented indicate that the algorithm performs well in a controlled
 setting.  A retrospective analysis of clinical images indicate that our system
 performs similar to an expert, and a phantom study using 3D printed optic
@@ -116,52 +117,43 @@ nerves of known diameter suggests that our system is accurate.
 
 The next step is to integrate an image quality estimation algorithm, so that
 high quality images of the optic nerve can be automatically identified as a
-probe is swept over the eye.   This will eliminate the need for the operator to
-ever view, interpret, or make measurements on an ultrasound image when using it
-to assess a dilated optic nerve sheath, as indicative of increased intracranial
-pressure.
+probe is swept over the eye. This will eliminate the need for the operator to
+view, interpret, or make measurements on an ultrasound image when using it to
+assess a dilated optic nerve sheath, as indicative of increased intracranial
+pressure. Ultimately, we aim for a system that can be used by novice operators
+with minimal ultrasound experience. The system will report when a sufficient
+image has been acquired, and it will automatically determine if the diameter of
+the optic nerve is greater than 5mm, thereby indicating increased intracranial
+pressure associated with mild or more severe TBI [4].
 
-Our long term goal is a system that can be used by novice operators, with
-minimal ultrasound experience.   The system will automatically report when a
-sufficient image has been acquired, and it will automatically determine if the
-diameter of the optic nerve is greater than 5mm, thereby indicating increased
-intracranial pressure associated with mild or more severe TBI.
-
+The long term goal of Kitware is to develop a lightweight portable ultrasound
+system that, in addition to automated diagnosis of TBI, includes automatic
+diagnosis tools for pneumothorax (detached lung) and internal bleeding.
 
 %
 % ---- Bibliography ----
 %
 \begin{thebibliography}{}
 %
-\bibitem[1980]{2clar:eke}
-Clarke, F., Ekeland, I.:
-Nonlinear oscillations and
-boundary-value problems for Hamiltonian systems.
-Arch. Rat. Mech. Anal. 78, 315--333 (1982)
+\bibitem[Du2012]{Du2012}
+Dubost, Clément, et al. 
+Optic Nerve Sheath Diameter Used as Ultrasonographic Assessment of the Incidence of Raised Intracranial Pressure in PreeclampsiaA Pilot Study.
+The Journal of the American Society of Anesthesiologists 116.5 (2012): 1066-1071.
 
-\bibitem[1981]{2clar:eke:2}
-Clarke, F., Ekeland, I.:
-Solutions p\'{e}riodiques, du
-p\'{e}riode donn\'{e}e, des \'{e}quations hamiltoniennes.
-Note CRAS Paris 287, 1013--1015 (1978)
+\bibitem[Jo2016]{Jo2016}
+Johnson, Garrett GRJ, et al. 
+Estimating the accuracy of optic nerve sheath diameter measurement using a pocket-sized, handheld ultrasound on a simulation model.
+Critical Ultrasound Journal 8.1 (2016): 18.
 
-\bibitem[1982]{2mich:tar}
-Michalek, R., Tarantello, G.:
-Subharmonic solutions with prescribed minimal
-period for nonautonomous Hamiltonian systems.
-J. Diff. Eq. 72, 28--55 (1988)
+\bibitem[Ze2014]{Ze2014}
+Zeiler, F. A., et al. 
+“A unique model for ONSD Part II: inter/intra-operator variability.” 
+Can J Neurol Sci 41 (2014): 430-435.
 
-\bibitem[1983]{2tar}
-Tarantello, G.:
-Subharmonic solutions for Hamiltonian
-systems via a $\bbbz_{p}$ pseudoindex theory.
-Annali di Matematica Pura (to appear)
-
-\bibitem[1985]{2rab}
-Rabinowitz, P.:
-On subharmonic solutions of a Hamiltonian system.
-Comm. Pure Appl. Math. 33, 609--633 (1980)
-
+\bibitem[Ma2015]{Ma2015}
+Maissan IM , Dirven PJ , Haitsma IK , Hoeks SE , Gommers D , Stolker RJ 
+Ultrasonographic measured optic nerve sheath diameter as an accurate and quick monitor for changes in intracranial pressure. 
+J Neurosurg. 2015 Sep;123(3):7437
 \end{thebibliography}
 
 \end{document}

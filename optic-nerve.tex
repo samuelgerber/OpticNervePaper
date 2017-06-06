@@ -1,8 +1,3 @@
-% This is LLNCS.DEM the demonstration file of
-% the LaTeX macro package from Springer-Verlag
-% for Lecture Notes in Computer Science,
-% version 2.4 for LaTeX2e as of 16. April 2010
-%
 \documentclass{llncs}
 %
 %\usepackage{makeidx}  % allows for indexgeneration
@@ -13,9 +8,8 @@
 
 \title{Automatic Estimation of the Optic Nerve Sheat Diameter from Ultrasound Images}
 %
-\titlerunning{Automatic Optic Nerve Sheat Diameter Estimation} % abbreviated title (for running head)
-%                                     also used for the TOC unless
-%                                     \toctitle is used
+\titlerunning{Automatic Optic Nerve Sheat Diameter Estimation} 
+% abbreviated title (for running head) also used for the TOC unless \toctitle is used
 %
 \author{
 Samuel Gerber,
@@ -75,9 +69,6 @@ measuring the optic nerve sheath diameter. The ultimate goal is a system that is
 easy to use and does not require expert personnel or specific training to
 diagnose TBI.    
 
-\section{Related Work}
-
-
 \section{Algorithm}
 We propose a two step approach to automate the measurement of the optic nerve
 sheath diameter. At a high level, the algorithm proceeds by locating the orb of
@@ -92,9 +83,9 @@ algorithm is applicable to a wide variety of images with differing quality.
 \begin{figure}
 \centering
 \begin{tabular}{ccc}
-\includegraphics[height=1.5in]{003-overlay.png} &
-\includegraphics[height=1.5in]{009-overlay.png} &
-\includegraphics[height=1.5in]{023-overlay.png} 
+\includegraphics[height=1.6in]{003-overlay.png} &
+\includegraphics[height=1.6in]{009-overlay.png} &
+\includegraphics[height=1.6in]{023-overlay.png} 
 \end{tabular}
 \caption{
 \label{fig:fitted}
@@ -110,15 +101,20 @@ Here we briefly describe the individual image processing steps to achieve an
 algorithm that performs a large variety of images from different types of probes
 and differences between subjects.
 
-The first part of the algorithm is locating and estimating the size of the eye
-and involves the following steps:
+The first part of the algorithm is locating and estimating the size of the eye.
+The liquid of the vitreous body of the eye has very low accoustic impedance and
+appears black in B-mode ultrasound images. The boundary of the vitreous body is
+frequnetly clearly delinated thorugh the skin of the closed eye and the adjacent
+tissue. However, accoustic shadows, poor probe contact and collagen floaters
+cause imperfections in the boundary as well as the interior. Thus, our robust
+eye detection requires several image processing steps: 
 \begin{enumerate}
 \item Estimate initial eye center and size
   \begin{enumerate}
   \item Gaussian smoothing
   \item Binary Thresholding
   \item Morphological closing
-  \item Distance transform. 
+  \item Distance transform 
   \item The maximum distance and its location of the distance transform provide
         initial radius and initial center of the eye orb. 
   \end{enumerate}
@@ -142,6 +138,9 @@ and involves the following steps:
 \item Refine eye center and major and minor estimates by applying the transform to
       the minor and major axis vectors and the center point.
 \end{enumerate}
+Figure~\ref{fig:algorithm-eye} illustrates the algorithm for locating the
+vitreous body of the eye with several intermediate images of the individual
+steps. 
 \begin{figure}
 \centering
 \begin{tabular}{ccccc}
@@ -154,18 +153,28 @@ and involves the following steps:
 \end{tabular}
 \caption{
 \label{fig:algorithm-eye}
-Intermediate steps to locate the ye orb.
+Intermediate steps to locate and estimate the size of the eye. (a) Input image,
+(b) Gaussian smoothing and threshold, (c) distance transfrom, (d) the ellipse
+image generated from the inital eye location and size estimates and (e) the
+registered ellipse and optic nerve sheath (from the nerve estimation algorithm)
+overlayed on the input image.
 }
 \end{figure}
 
-The location of they orb provides an approximate region for locating the
-acoustic shadow of the optic nerve for the second part, estimating the width of
-the acoustic shadow of the optic nerve sheath, of the algorithm. Estimating the
-width of the acoustic shadow involves the following steps:
+The location of they eye provides an approximate region for locating the optic
+nerve sheath. The optic nerve sheath has a very strong accoustic impedance and
+reflects a signifcant amount of the energy of the sound wave. This results in an
+acoustic shadow that appears as a darker tube behind the optic nerve sheath.
+We take advantage of this acoustic shadow to estimate the width the optic nerve.
+The shadow again is imperfect and the shadow boundary can exhibit several
+imperfections and have strong intensity variations. We suggest the following
+image processing steps to enhance the shadow boundary before a registration of
+two parallel vertical bars to delinate the width of the shadow:
 \begin{enumerate}
 \item Extract optic nerve region below the eye using the eye location and size estimates
 \item Gaussian smoothing
-\item Scale intensity per individual rows from 0 to 100
+\item Scale intensity per individual rows from 0 to 100 to alleviate attenuation
+      effects.
 \item Compute initial center and width estimates
   \begin{enumerate}
   \item Binary threshold
@@ -173,7 +182,8 @@ width of the acoustic shadow involves the following steps:
   \item Distance transform
   \end{enumerate}
 \item Scale intensities per row and on each side of the optic nerve center
-      independently from 0 to 100.
+      independently from 0 to 100 (Often the left and right boundary exhibt
+      vastly different intensities). 
 \item Refine initial center and width estimates
   \begin{enumerate}
   \item Binary threshold
@@ -202,20 +212,25 @@ width of the acoustic shadow involves the following steps:
 \end{tabular}
 \caption{
 \label{fig:algorithm-nerve}
-Intermediate steps to fit the acoustic shadow of the optic nerve sheath.
+Intermediate steps to fit the acoustic shadow of the optic nerve sheath. (a)
+Optic nerve sheath region located from the eye location and size estimates, (b)
+Gaussian smooth and intensity scaling of individual rows, (c) Distance
+transform, (d) scaling of rows independently left and right of the initial
+center (e) thresholding and (f) vertical bars before registration based on intal
+estimates.
 }
 \end{figure}
 
 \subsection{Interactive Graphical User Interface}
 Our algorithm reports estimates of the optic nerve sheath diameter in near real
-time as an ultrasound probe is swept across the closed eye of a patient. 
-This algorithm is now integrated into a user-friendly interface and performs
+time as an ultrasound probe is swept across the closed eye of a patient.  This
+algorithm is now integrated into a user-friendly interface and performs
 estimates at 4 frames per second. Depending on the ultrasound probe, the
-algorithm can be simplified by skipping the eye estimation step to run at
-around 20 frames per second.
+algorithm can be simplified by skipping the eye estimation step to run at around
+20 frames per second. 
 \begin{figure}
 \centering
-\includegraphics[width=0.85\linewidth]{gui.jpg} 
+\includegraphics[width=0.75\linewidth]{gui.jpg} 
 \caption{
 \label{fig:gui}
 Graphical user interface to image an eye phantom on a windows table connected to
@@ -223,12 +238,17 @@ a USB ultrasound probe from Interson at interactive frame rates.
 }
 \end{figure}
 
+
 \section{Evaluation}
+We evaluated the performance of the proposed automatic estimator in two ways.
+A comparison to manual estimates from novices and medical experts shows that the
+method has high precision and performs within expert variability. Comparing the
+automatic estimates from a gelatine eye phantom with known ground truth
+diameters shows that the method is highly accurate. 
 
 \subsection{Comparison to Manual Estimation}
-To evaluate the quality of the estimates we had 13 volunteers ranging novices to
-medical professionals annotate 23 ultrasound images. We then compared the
-automatic estimates to the estimates of the volunteers.
+For this study 13 volunteers ranging novices to medical professionals annotated
+23 ocular ultrasound images (in pixel units due to unknown image spacing units).
 Figure~\ref{fig:regression} shows a linear regression of the automatic estimated
 diameter from two different parameter settings of the algorithm as compared to a
 medical expert. The automatic estimates had an $\textrm{R}^2$ around 0.91 and
@@ -246,6 +266,9 @@ on the order of machine precision ($2e^{-16}$).
 }
 \end{figure}
 
+Table~\ref{tab:correlation} contains all pairwise correlations between all
+participants of the study as well as two automatic estimates with different
+parameter settings.
 \begin{table}[!htbp] \centering 
 \caption{Pairwise Pearson's correlation coefficients between novice (N1 - N10), expert ( E1 - E3 ) and
 automatic (A1, A2) estimates.} 
@@ -278,12 +301,12 @@ A2 & $0.52$ & $0.89$ & $0.83$ & $0.85$ & $0.85$ & $0.86$ & $0.89$ & $0.63$ & $0.
 }
 \end{table} 
 
-The mean intra correlations among medical professionals was
-0.84.  Thus, on this small sample size the automatic estimates perform on par
-with medical experts. The correlation among experts matches results of previous
-studies. The average correlation among medical expert was 0.81, among novice
-0.72, among the automatic estimates
-
+Table~\ref{tab:intercorrelation} shows the intra-and inter-correlation between
+novice, expert and automatic estimates. The automatic estimates is more strongly
+correlated (0.85) to the medical expert than the correlation within the group of
+medical experts (0.81).The correlation among experts matches results of previous
+studies~\cite{Jo2016,Ze2014}.  Thus, the precision of the proposed automatic
+estimator performs on par or better than medical experts.
 \begin{table}[!htbp] \centering 
 \caption{Inter- and intra-correlations (mean Pearson correlation coefficients)
         among novice, expert and automated estimates.} 
@@ -315,22 +338,43 @@ The details for construction of the phantom are described in~\cite{Ze2014}.
 \caption{
 \label{fig:phantom}
 Gelatine phantom for acquiring ultrasound images with know ground truth optic
-nerve sheath diameters. The images from the phantom are very realistic
+nerve sheath diameters. The images from the phantom are a very realistic
 approximation to images acquired through ocular ultrasound. 
 }
 \end{figure}
 
 The goal of this evaluation is to check if an accurate estimate of the optic
 nerve is possible with the proposed algorithm. In this controlled setting we
-first located the optic nerve using the ultrasound. Once a good image of the
-optic nerve was achieved the automatic estimation process was started and run
-interactively for about 10 seconds which resulted in approximately 40 to 50
-optic nerve sheath diameter estimates. The table below shows that the means of
-the automatic estimates are within less than +/- 0.5\,mm  with a relatively tight
-distribution of estimates around the ground truth diameter. A study on
-intra-operator variations on the same type of phantom, reports standard
-deviations of the measurements ranging from 0.25 to 0.6\,mm depending on
-diameter size.  
+first located the optic nerve using the ultrasound. We used an Interson linear
+array probe with 127 transducer elements and a pixel size of 0.8\,mm.  Once a
+good image of the optic nerve was achieved the automatic estimation process was
+started and run interactively for about 10 seconds which resulted in
+approximately 40 to 50 optic nerve sheath diameter estimates. The table below
+shows that the means of the automatic estimates are within less than +/- 1\,mm
+with a relatively tight distribution of estimates around the ground truth
+diameter. A study on intra-operator variations on the same type of phantom but
+with higher resolution ultrasound probes, reports standard deviations of the
+measurements ranging from 0.25 to 0.6\,mm depending on diameter
+size~\cite{Jo2016}.  
+\begin{table}
+\caption{
+}
+\label{tab:phantom}
+\begin{tabular}{l|cc|ccc}
+\\[-2.8ex] 
+\hline  
+\hline 
+\\[-1.8ex]
+Disc Size & Mean & Std. Deviation & Low.Quartile & Median & Up. Quartile \\
+\hline
+7mm & 7mm   & 1mm   & 6.4mm & 6.9mm & 7.7mm \\
+6mm & 6.1mm & 1mm   & 5.8mm & 6.4mm & 6.6mm \\
+5mm & 5.1mm & 1.4mm & 4.4mm & 4.9mm & 5.7mm \\
+4mm & 4.4mm & 0.6mm & 4.2mm & 4.3mm & 4.5mm \\
+3mm & 3.4mm & 1.1mm & 2.9mm & 3.2mm & 3.5mm \\
+\hline 
+\end{tabular}
+\end{table}
 
 \section{Conclusion}
 The results presented indicate that the algorithm performs well in a controlled
@@ -387,6 +431,39 @@ Zeiler, F. A., et al.
 A unique model for ONSD Part II: inter/intra-operator variability. 
 Can J Neurol Sci 41 (2014): 430-435.
 
+%TODO related work
+\bibitem[Ga2005]{Ga2005}
+Garcia, Julian PS, et al. 
+Optic nerve measurements by 3D ultrasound-based coronal" C-scan" imaging.
+Ophthalmic Surgery, Lasers and Imaging Retina 36.2 (2005): 142-146.
+
+\bibitem[Ro2011]{Ro2011}
+Rosenberg, Jamie B., et al. 
+Non-invasive methods of estimating intracranial pressure.
+Neurocritical care 15.3 (2011): 599-608.
+
+\bibitem[Du2011]{Du2011}
+Dubourg, Julie, et al. 
+Ultrasonography of optic nerve sheath diameter for detection of raised
+intracranial pressure: a systematic review and meta-analysis.
+Intensive care medicine 37.7 (2011): 1059-1068.
+
+\bibitem[Ra2011]{Ra2011}
+Rajajee, Venkatakrishna, et al. 
+Optic nerve ultrasound for the detection of raised intracranial pressure. 
+Neurocritical care 15.3 (2011): 506-515.
+
+\bibitem[Mo2009]{Mo2009}
+Moretti, Riccardo, et al. 
+Reliability of optic nerve ultrasound for the evaluation of patients with
+spontaneous intracranial hemorrhage.
+Neurocritical care 11.3 (2009): 406.
+
+\bibitem[Ki2008]{Ki2008}
+Kimberly, Heidi Harbison, et al. 
+Correlation of optic nerve sheath diameter with direct measurement of
+intracranial pressure.
+Academic Emergency Medicine 15.2 (2008): 201-204.
 
 \end{thebibliography}
 

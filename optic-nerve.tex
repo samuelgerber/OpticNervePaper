@@ -36,6 +36,15 @@ Stephen Aylward
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
+We present an algorithm to automatically estimate the diameter of the optic
+nerve sheath from ocular ultrasound images. The optic nerve sheath diameter
+provides a proxy for measuring intracranial pressure,  a life threating
+condition frequently associated to head trauma. Early treatment of elevated
+intracranial pressures greatly improves outcomes and drastically reduces the 
+mortality rate. We demonstrate that the proposed algorithm combined with a
+portable ultrasound device presents a viable path for early detection of
+elevated intracranial pressure in remote locations and without access to trained
+medical imaging experts. 
 \end{abstract}
 %
 \section{Introduction}
@@ -55,22 +64,22 @@ pressure, are associated with 90\,\% mortality if detected and treated more than
 4 hours after injury, and yet are associated with only 30\,\% mortality if
 detected and treated earlier~\cite{Se1981}.
 
-In a clinical setting, a non-invase appraoch to measure intracranial pressure is
+In a clinical setting, a non-invasive approach to measure intracranial pressure is
 by ocular ultrasound. From the ocular ultrasound image the physicians manually
 measures the diameter of optic nerve sheath at a location 3\,mm behind the retina.
 Acquiring such images and making these measurements is challenging and time
-consuming task. We porpose to automate the process of measuring the diameter of
+consuming task. We propose to automate the process of measuring the diameter of
 the optic nerve sheath and integrate within a portable ultrasound system to
 automatically report elevated intracranial pressure without the need of manually
 measuring the optic nerve sheath diameter. The ultimate goal is a system that is
-easy to use and does not require expert personnel or specific trainng to
+easy to use and does not require expert personnel or specific training to
 diagnose TBI.    
 
 \section{Related Work}
 
 
 \section{Algorithm}
-We propose a two step approach to automate the measurement of the optic nevre
+We propose a two step approach to automate the measurement of the optic nerve
 sheath diameter. At a high level, the algorithm proceeds by locating the orb of
 the eye through registration of an ellipse with the largest dark circle in the
 image data. From the ellipse an approximate location of the optic nerve is
@@ -79,7 +88,7 @@ high-level description leaves out several intermediate steps such as those
 involving image smoothing, morphological operations, and distance transforms,
 that are required to achieve good registration results. Figure~\ref{fig:fitted}
 shows result of the fitting procedure and illustrates that the proposed
-algorirthm is applicabale to a wide variety of images with differing quality.
+algorithm is applicable to a wide variety of images with differing quality.
 \begin{figure}
 \centering
 \begin{tabular}{ccc}
@@ -89,17 +98,17 @@ algorirthm is applicabale to a wide variety of images with differing quality.
 \end{tabular}
 \caption{
 \label{fig:fitted}
-Result of the proposed algorithm on three occular ultrasound images. The
+Result of the proposed algorithm on three ocular ultrasound images. The
 overlays illustrate the registration results of the algorithm. The blue ellipse
 delineates the location of they eye orb and the red bars are the result of
-fitting the boundray of the accoustic shadow induced by the optic neve sheath.
+fitting the boundary of the acoustic shadow induced by the optic nerve sheath.
 }
 \end{figure}
 
 \subsection{Algorithm Details}
 Here we briefly describe the individual image processing steps to achieve an
 algorithm that performs a large variety of images from different types of probes
-and differcens between subjects.
+and differences between subjects.
 
 The first part of the algorithm is locating and estimating the size of the eye
 and involves the following steps:
@@ -110,28 +119,28 @@ and involves the following steps:
   \item Binary Thresholding
   \item Morphological closing
   \item Distance transform. 
-  \item The maximum distance and its location of the distance transfrom provide inital radius
-        and inital center of the eye orb. 
+  \item The maximum distance and its location of the distance transform provide
+        initial radius and initial center of the eye orb. 
   \end{enumerate}
-\item Refine intial estimates
+\item Refine initial estimates
   \begin{enumerate}
   \item Distance transform over vertical image strip of width 20 pixels
-        around the intial eye center location estimate provides an intial
+        around the initial eye center location estimate provides an initial
         minor ellipse radius.
   \item Distance transform over horizontal image strip of width 20 pixels 
-        around the intial eye center location estimate provides an inital major
+        around the initial eye center location estimate provides an initial major
         ellipse radius.
   \end{enumerate}
 \item Gaussian smoothing, threshold and rescale
-\item Create an binary ellipse annulus with the intial estimates of the minor and
+\item Create an binary ellipse annulus with the initial estimates of the minor and
       minor axis of width $0.2$ times the major axis with center located at the
-      intial eye location estimate.
+      initial eye location estimate.
 \item Register ocular ultrasound (moving image) to ellipse image (fixed image)
-      under an affine transform with a masked mean squaered error metric. The
-      mask is an ellipse that encomposses the ellipse annulus on the fixed
-      image. The affine transfrom is centered on the ellipse center.
-\item Refine eye center and major and minor estimates applying the transform to
-      the minor and major axiis vectors and the center point.
+      under an affine transform with a masked mean squared error metric. The
+      mask is an ellipse that encompasses the ellipse annulus on the fixed
+      image. The affine transform is centered on the ellipse center.
+\item Refine eye center and major and minor estimates by applying the transform to
+      the minor and major axis vectors and the center point.
 \end{enumerate}
 \begin{figure}
 \centering
@@ -150,27 +159,35 @@ Intermediate steps to locate the ye orb.
 \end{figure}
 
 The location of they orb provides an approximate region for locating the
-accoustic shadow of the optic nerve for the second part, estimating the width of
-teh accoustic shadow of the optic nerve sheath, of the algorithm. Estimating the
-width of the accoustic shadow involves the following steps:
+acoustic shadow of the optic nerve for the second part, estimating the width of
+the acoustic shadow of the optic nerve sheath, of the algorithm. Estimating the
+width of the acoustic shadow involves the following steps:
 \begin{enumerate}
 \item Extract optic nerve region below the eye using the eye location and size estimates
-\item Preprocess ( Gaussian smoothing, Rescale individual rows )
+\item Gaussian smoothing
+\item Scale intensity per individual rows from 0 to 100
 \item Compute initial center and width estimates
   \begin{enumerate}
-  \item Binary threshold, Morphological opening, Add vertical border and small horizontal border, Distance transform
+  \item Binary threshold
+  \item Morphological opening
+  \item Distance transform
   \end{enumerate}
-\item Scale rows on each side of the optic nerve center independently
+\item Scale intensities per row and on each side of the optic nerve center
+      independently from 0 to 100.
 \item Refine initial center and width estimates
   \begin{enumerate}
-  \item Binary threshold, Morphological opening, Add vertical border and small horizontal border, Distance transform
+  \item Binary threshold
+  \item Morphological opening
+  \item Distance transform
   \end{enumerate}
-\item Register U-profile image to processed image with a similarity transform
-  \begin{enumerate}
-  \item Use initial center and width to create U-profile image
-  \item Mask cost function
-  \end{enumerate}
-\item Refine width estimates through the affine transform
+\item Use refined initial center and width to create an image with two vertical bars. 
+\item Register the two vertical bars (fixed image) to the processed image (moving
+      image) under a similarity transform (rotation, translation and scaling)
+      with a masked mean squared error metric. The mask is a rectangle that
+      encompasses the two vertical bars. The similarity transform is centered on
+      the initial  center estimate.
+\item Refine width estimates by applying the registration transform to a vector
+      that spans from the left to the right vertical bar of the fixed image.
 \end{enumerate}
 \begin{figure}
 \centering
@@ -185,7 +202,7 @@ width of the accoustic shadow involves the following steps:
 \end{tabular}
 \caption{
 \label{fig:algorithm-nerve}
-Intermediate steps to fit the accoustic shadow of the optic nerve sheath.
+Intermediate steps to fit the acoustic shadow of the optic nerve sheath.
 }
 \end{figure}
 
@@ -202,37 +219,104 @@ around 20 frames per second.
 \caption{
 \label{fig:gui}
 Graphical user interface to image an eye phantom on a windows table connected to
-a USB ultrasound probe from Interson at interactive framerates. 
+a USB ultrasound probe from Interson at interactive frame rates. 
 }
 \end{figure}
 
 \section{Evaluation}
 
 \subsection{Comparison to Manual Estimation}
-To evaluate the quality of the estimates we had 13 volunteers ranging from
-Kitware engineers to medical professionals annotate 23 ultrasound images.  The
-image below shows a linear fit of the automatic estimated diameter from two
-different parameter settings of the algorithm as compared to a medical
-professional. The automatic estimates had an R2 of around 0.9 and 0.8,
-respectively. The mean intra correlations among medical professionals was 0.84.
-Thus, on this small sample size the automatic estimates perform on par with
-medical experts. The correlation among experts matches results of previous
-studies.
+To evaluate the quality of the estimates we had 13 volunteers ranging novices to
+medical professionals annotate 23 ultrasound images. We then compared the
+automatic estimates to the estimates of the volunteers.
+Figure~\ref{fig:regression} shows a linear regression of the automatic estimated
+diameter from two different parameter settings of the algorithm as compared to a
+medical expert. The automatic estimates had an $\textrm{R}^2$ around 0.91 and
+0.82, respectively. 
+\begin{figure}
+\centering
+\includegraphics[width=0.65\linewidth]{linear-fit.pdf} 
+\caption{
+\label{fig:regression}
+Linear regression of automatic estimates from two different parameter settings
+against the estimates of a medical expert. The automatic estimates have an
+$\mathrm{R}^2$
+of 0.82 and 0.91, respectively and are statistically significant with a p-value
+on the order of machine precision ($2e^{-16}$).
+}
+\end{figure}
+
+\begin{table}[!htbp] \centering 
+\caption{Pairwise Pearson's correlation coefficients between novice (N1 - N10), expert ( E1 - E3 ) and
+automatic (A1, A2) estimates.} 
+\label{tab:correlation}
+\resizebox{\textwidth}{!}{ 
+\begin{tabular}{@{\extracolsep{5pt}} l|cccccccccc|ccc|cc} 
+\\[-2.8ex] 
+\hline
+\hline 
+\\[-1.8ex] 
+   & N1 & N2 & N3 & N4 & N5 & N6 & N7 & N8 & N9 & N10 & E1 & E2 & E3 & A1 & A2 \\ 
+\hline \\[-1.8ex] 
+N1 & $1$ & $0.42$ & $0.34$ & $0.29$ & $0.33$ & $0.68$ & $0.32$ & $0.91$ & $0.56$ & $0.29$ & $0.52$ & $0.54$ & $0.36$ & $0.35$ & $0.52$ \\ 
+N2 & $0.42$ & $1$ & $0.83$ & $0.93$ & $0.92$ & $0.85$ & $0.95$ & $0.56$ & $0.83$ & $0.93$ & $0.86$ & $0.91$ & $0.95$ & $0.91$ & $0.89$ \\ 
+N3 & $0.34$ & $0.83$ & $1$ & $0.88$ & $0.92$ & $0.84$ & $0.90$ & $0.45$ & $0.70$ & $0.91$ & $0.80$ & $0.74$ & $0.88$ & $0.83$ & $0.83$ \\ 
+N4 & $0.29$ & $0.93$ & $0.88$ & $1$ & $0.94$ & $0.80$ & $0.96$ & $0.42$ & $0.74$ & $0.97$ & $0.82$ & $0.83$ & $0.94$ & $0.92$ & $0.85$ \\ 
+N5 & $0.33$ & $0.92$ & $0.92$ & $0.94$ & $1$ & $0.83$ & $0.93$ & $0.45$ & $0.72$ & $0.94$ & $0.83$ & $0.82$ & $0.91$ & $0.85$ & $0.85$ \\ 
+N6 & $0.68$ & $0.85$ & $0.84$ & $0.80$ & $0.83$ & $1$ & $0.83$ & $0.75$ & $0.79$ & $0.82$ & $0.83$ & $0.84$ & $0.83$ & $0.83$ & $0.86$ \\ 
+N7 & $0.32$ & $0.95$ & $0.90$ & $0.96$ & $0.93$ & $0.83$ & $1$ & $0.46$ & $0.83$ & $0.95$ & $0.80$ & $0.90$ & $0.97$ & $0.95$ & $0.89$ \\ 
+N8 & $0.91$ & $0.56$ & $0.45$ & $0.42$ & $0.45$ & $0.75$ & $0.46$ & $1$ & $0.60$ & $0.45$ & $0.60$ & $0.66$ & $0.51$ & $0.51$ & $0.63$ \\ 
+N9 & $0.56$ & $0.83$ & $0.70$ & $0.74$ & $0.72$ & $0.79$ & $0.83$ & $0.60$ & $1$ & $0.73$ & $0.82$ & $0.88$ & $0.82$ & $0.74$ & $0.78$ \\ 
+N10 & $0.29$ & $0.93$ & $0.91$ & $0.97$ & $0.94$ & $0.82$ & $0.95$ & $0.45$ & $0.73$ & $1$ & $0.85$ & $0.80$ & $0.94$ & $0.91$ & $0.84$ \\ 
+E1 & $0.52$ & $0.86$ & $0.80$ & $0.82$ & $0.83$ & $0.83$ & $0.80$ & $0.60$ & $0.82$ & $0.85$ & $1$ & $0.71$ & $0.82$ & $0.72$ & $0.77$ \\ 
+E2 & $0.54$ & $0.91$ & $0.74$ & $0.83$ & $0.82$ & $0.84$ & $0.90$ & $0.66$ & $0.88$ & $0.80$ & $0.71$ & $1$ & $0.90$ & $0.88$ & $0.87$ \\ 
+E3 & $0.36$ & $0.95$ & $0.88$ & $0.94$ & $0.91$ & $0.83$ & $0.97$ & $0.51$ & $0.82$ & $0.94$ & $0.82$ & $0.90$ & $1$ & $0.95$ & $0.90$ \\ 
+A1 & $0.35$ & $0.91$ & $0.83$ & $0.92$ & $0.85$ & $0.83$ & $0.95$ & $0.51$ & $0.74$ & $0.91$ & $0.72$ & $0.88$ & $0.95$ & $1$ & $0.92$ \\ 
+A2 & $0.52$ & $0.89$ & $0.83$ & $0.85$ & $0.85$ & $0.86$ & $0.89$ & $0.63$ & $0.78$ & $0.84$ & $0.77$ & $0.87$ & $0.90$ & $0.92$ & $1$ \\
+\hline  
+\end{tabular} 
+}
+\end{table} 
+
+The mean intra correlations among medical professionals was
+0.84.  Thus, on this small sample size the automatic estimates perform on par
+with medical experts. The correlation among experts matches results of previous
+studies. The average correlation among medical expert was 0.81, among novice
+0.72, among the automatic estimates
+
+\begin{table}[!htbp] \centering 
+\caption{Inter- and intra-correlations (mean Pearson correlation coefficients)
+        among novice, expert and automated estimates.} 
+\label{tab:intercorrelation} 
+\begin{tabular}{@{\extracolsep{5pt}} l|ccc} 
+\\[-2.8ex] 
+\hline  
+\hline 
+\\[-1.8ex] 
+   & Novice & Expert & Automatic \\ 
+\hline \\[-1.8ex] 
+Novice    & 0.72 & 0.79 & 0.78 \\
+Expert    & 0.79 & 0.81 & 0.85 \\
+Automatic & 0.78 & 0.85 & 0.92 \\
+\hline 
+\end{tabular} 
+\end{table} 
+
 
 \subsection{Gel Phantom Study}
 For additional evaluation of the performance of the algorithm we built a
 phantom from gelatine in which 3D-printed “optic nerves” (plastic discs) of
 known diameter can be embedded under gelatine orbs and imaged, producing
 ultrasound images that look closely resemble clinical ocular ultrasound images.
-The deatils for construction of the phantom are describd in~\cite{Ze2014}.
+The details for construction of the phantom are described in~\cite{Ze2014}.
 \begin{figure}
 \centering
 \includegraphics[width=0.85\linewidth]{phantom.jpg} 
 \caption{
 \label{fig:phantom}
-Gelatine phantom for aquiring ultrasound images with know ground truth optic
-nerev sheath diameters. The images from the phantom are very realistic
-approximation to images aquired through occular ultrasound. 
+Gelatine phantom for acquiring ultrasound images with know ground truth optic
+nerve sheath diameters. The images from the phantom are very realistic
+approximation to images acquired through ocular ultrasound. 
 }
 \end{figure}
 
@@ -242,10 +326,10 @@ first located the optic nerve using the ultrasound. Once a good image of the
 optic nerve was achieved the automatic estimation process was started and run
 interactively for about 10 seconds which resulted in approximately 40 to 50
 optic nerve sheath diameter estimates. The table below shows that the means of
-the automatic estimates are within less than +/- 0.5mm  with a relatively tight
+the automatic estimates are within less than +/- 0.5\,mm  with a relatively tight
 distribution of estimates around the ground truth diameter. A study on
 intra-operator variations on the same type of phantom, reports standard
-deviations of the measurements ranging from 0.25 to 0.6 mm depending on
+deviations of the measurements ranging from 0.25 to 0.6\,mm depending on
 diameter size.  
 
 \section{Conclusion}
@@ -263,9 +347,9 @@ pressure. Ultimately, we aim for a system that can be used by novice operators
 with minimal ultrasound experience. The system will report when a sufficient
 image has been acquired, and it will automatically determine if the diameter of
 the optic nerve is greater than 5mm, thereby indicating increased intracranial
-pressure associated with mild or more severe TBI [4].
+pressure associated with mild or more severe TBI~\cite{Ma2015}.
 
-The long term goal of Kitware is to develop a lightweight portable ultrasound
+The long term goal is to develop a lightweight portable ultrasound
 system that, in addition to automated diagnosis of TBI, includes automatic
 diagnosis tools for pneumothorax (detached lung) and internal bleeding.
 

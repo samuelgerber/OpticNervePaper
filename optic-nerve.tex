@@ -116,13 +116,13 @@ The liquid of the vitreous body of the eye has very low acoustic impedance and
 appears black in B-mode ultrasound images. The boundary of the vitreous body is
 frequently clearly delineated through the skin of the closed eye and the
 adjacent tissue. However, acoustic shadows, poor probe contact and collagen
-floaters cause imperfections in the boundary as well as the interior. Thus, our
-robust eye detection requires several image processing steps: 
+floaters cause imperfections in the boundary as well as the interior. Thus, the
+proposed eye detection algorithm requires several image processing steps: 
 \begin{enumerate}
 \item Estimate initial eye center and size:
   \begin{enumerate}
   \item Gaussian smoothing, binary thresholding, morphological closing and
-          distance transform.
+        distance transform.
   \item The maximum distance and its location of the distance transform provide
         initial radius and initial center of the eye orb. 
   \end{enumerate}

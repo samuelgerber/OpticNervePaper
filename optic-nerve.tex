@@ -79,15 +79,16 @@ process.
 
 \section{Algorithm}
 We propose a two step approach to automate the measurement of the optic nerve
-sheath diameter. At a high level, the algorithm proceeds by locating the orb of
-the eye through registration of an ellipse with the largest dark circle in the
-image data. From the ellipse an approximate location of the optic nerve is
-constructed and used to fit two bars to the walls of the optic nerve. This
-high-level description leaves out several intermediate steps such as those
-involving image smoothing, morphological operations, and distance transforms,
-that are required to achieve good registration results. Figure~\ref{fig:fitted}
-shows result of the fitting procedure and illustrates that the proposed
-algorithm is applicable to a wide variety of images with differing quality.
+sheath diameter. At a high level, the algorithm proceeds by locating the eye
+through registration of an ellipse with the largest dark circle in the image
+data. From the ellipse an approximate location of the optic nerve is constructed
+and used to fit two bars to the walls of the acoustic shadow behind the optic
+nerve. This high-level description leaves out several intermediate steps such as
+those involving image smoothing, morphological operations, and distance
+transforms, described in detail in Section~\ref{sec:details}. that are required
+to achieve good registration results.  Figure~\ref{fig:fitted} shows result of
+the fitting procedure and illustrates that the proposed algorithm is applicable
+to a wide variety of images with differing quality.
 \begin{figure}
 \centering
 \begin{tabular}{ccc}
@@ -99,12 +100,13 @@ algorithm is applicable to a wide variety of images with differing quality.
 \label{fig:fitted}
 Result of the proposed algorithm on three ocular ultrasound images. The
 overlays illustrate the registration results of the algorithm. The blue ellipse
-delineates the location of they eye orb and the red bars are the result of
-fitting the boundary of the acoustic shadow induced by the optic nerve sheath.
+delineates the location of they eye and the red bars are the result of fitting
+the boundary of the acoustic shadow induced by the optic nerve sheath.
 }
 \end{figure}
 
 \subsection{Algorithm Details}
+\label{sec:details}
 Here we briefly describe the individual image processing steps to achieve an
 algorithm that performs a large variety of images from different types of probes
 and differences between subjects.

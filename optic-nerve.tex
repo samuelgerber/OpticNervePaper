@@ -69,7 +69,6 @@ measuring the optic nerve sheath diameter. The ultimate goal is a system that is
 easy to use and does not require expert personnel or specific training to
 diagnose TBI.    
 
-\section{Related Work}
 Using ultrasound for estimation of optic nerve sheath diameter is a well
 establish approach to diagnose elevated intracranial
 pressure~\cite{Ki2008,Ro2011} and various studies have been performed to
@@ -92,9 +91,9 @@ algorithm is applicable to a wide variety of images with differing quality.
 \begin{figure}
 \centering
 \begin{tabular}{ccc}
-\includegraphics[height=1.6in]{003-overlay.png} &
-\includegraphics[height=1.6in]{009-overlay.png} &
-\includegraphics[height=1.6in]{023-overlay.png} 
+\includegraphics[height=1.2in]{003-overlay.png} &
+\includegraphics[height=1.2in]{009-overlay.png} &
+\includegraphics[height=1.2in]{023-overlay.png} 
 \end{tabular}
 \caption{
 \label{fig:fitted}
@@ -151,32 +150,32 @@ steps.
 \begin{figure}
 \centering
 \begin{tabular}{ccccc}
-\includegraphics[height=1.32in]{019.png} &
-\includegraphics[height=1.32in]{019-eye-smooth.png} &
-\includegraphics[height=1.32in]{019-eye-distance.png} &         
-\includegraphics[height=1.32in]{019-eye-moving.png} &
-\includegraphics[height=1.32in]{019-overlay.png}\\
+\includegraphics[height=1.22in]{019.png} &
+\includegraphics[height=1.22in]{019-eye-smooth.png} &
+\includegraphics[height=1.22in]{019-eye-distance.png} &         
+\includegraphics[height=1.22in]{019-eye-moving.png} &
+\includegraphics[height=1.22in]{019-overlay.png}\\
 (a) & (b) & (c) & (d) & (e)
 \end{tabular}
 \caption{
 \label{fig:algorithm-eye}
 Intermediate steps to locate and estimate the size of the eye. (a) Input image,
-(b) Gaussian smoothing and threshold, (c) distance transfrom, (d) the ellipse
-image generated from the inital eye location and size estimates and (e) the
+(b) Gaussian smoothing and threshold, (c) distance transform, (d) the ellipse
+image generated from the initial eye location and size estimates and (e) the
 registered ellipse and optic nerve sheath (from the nerve estimation algorithm)
-overlayed on the input image.
+overlay on the input image.
 }
 \end{figure}
 
 The location of they eye provides an approximate region for locating the optic
-nerve sheath. The optic nerve sheath has a very strong accoustic impedance and
-reflects a signifcant amount of the energy of the sound wave. This results in an
+nerve sheath. The optic nerve sheath has a very strong acoustic impedance and
+reflects a significant amount of the energy of the sound wave. This results in an
 acoustic shadow that appears as a darker tube behind the optic nerve sheath.
 We take advantage of this acoustic shadow to estimate the width the optic nerve.
 The shadow again is imperfect and the shadow boundary can exhibit several
 imperfections and have strong intensity variations. We suggest the following
 image processing steps to enhance the shadow boundary before a registration of
-two parallel vertical bars to delinate the width of the shadow:
+two parallel vertical bars to delineate the width of the shadow:
 \begin{enumerate}
 \item Extract optic nerve region below the eye using the eye location and size estimates
 \item Gaussian smoothing.
@@ -220,7 +219,7 @@ Intermediate steps to fit the acoustic shadow of the optic nerve sheath. (a)
 Optic nerve sheath region located from the eye location and size estimates, (b)
 Gaussian smooth and intensity scaling of individual rows, (c) Distance
 transform, (d) scaling of rows independently left and right of the initial
-center (e) thresholding and (f) vertical bars before registration based on intal
+center (e) thresholding and (f) vertical bars before registration based on intial
 estimates.
 }
 \end{figure}
@@ -256,22 +255,27 @@ diameters and shows that the method is very accurate.
 \label{sec:manual}
 For this study 13 volunteers ranging novices to medical professionals annotated
 23 ocular ultrasound images (in pixel units due to unknown image spacing units).
-Figure~\ref{fig:regression} shows a linear regression of the automatic estimated
-diameter from two different parameter settings of the algorithm as compared to a
-medical expert. The automatic estimates had an $\textrm{R}^2$ around 0.91 and
-0.82, respectively. 
-\begin{figure}
-\centering
-\includegraphics[width=0.6\linewidth]{linear-fit.pdf} 
-\caption{
-\label{fig:regression}
-Linear regression of automatic estimates from two different parameter settings
-against the estimates of a medical expert. The automatic estimates have an
-$\mathrm{R}^2$
-of 0.82 and 0.91, respectively and are statistically significant with a p-value
-on the order of machine precision ($2e^{-16}$).
-}
-\end{figure}
+A linear regression of the automatic estimates with two different parameter
+settings against the estimates of a medical expert resulted in an $\mathrm{R}^2$
+of 0.82 and 0.91, respectively and both were  statistically significant with a
+p-value on the order of machine precision ($2e^{-16}$).
+
+%Figure~\ref{fig:regression} shows a linear regression of the automatic estimated
+%diameter from two different parameter settings of the algorithm as compared to a
+%medical expert. The automatic estimates had an $\textrm{R}^2$ around 0.91 and
+%0.82, respectively. 
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.6\linewidth]{linear-fit.pdf} 
+%\caption{
+%\label{fig:regression}
+%Linear regression of automatic estimates from two different parameter settings
+%against the estimates of a medical expert. The automatic estimates have an
+%$\mathrm{R}^2$
+%of 0.82 and 0.91, respectively and are statistically significant with a p-value
+%on the order of machine precision ($2e^{-16}$).
+%}
+%\end{figure}
 
 Table~\ref{tab:correlation} contains all pairwise correlations between all
 participants of the study as well as two automatic estimates with different

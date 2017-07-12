@@ -60,14 +60,15 @@ reduces the mortality rate to 30\,\%~\cite{Se1981}.
 
 In a clinical setting, a non-invasive approach to measure intracranial pressure is
 by ocular ultrasound. From the ocular ultrasound image the physician manually
-measures the diameter of optic nerve sheath at a location 3\,mm behind the retina.
-Acquiring such images and making these measurements is a challenging and time
-consuming task. We propose to automate the process of measuring the diameter of
-the optic nerve sheath and integrate it with a portable ultrasound system to
-automatically report elevated intracranial pressure without the need of
-manually measuring the optic nerve sheath diameter. The ultimate goal is a
-system that is easy to use and does not require expert personnel or specific
-training to diagnose TBI.    
+measures the diameter of optic nerve sheath at a location 3\,mm behind the
+retina. A diameter of the optic nerve greater than 5mm indicates increased
+intracranial pressure~\cite{Ma2015}.  Acquiring such images and making these
+measurements is a challenging and time consuming task. We propose to automate
+the process of measuring the diameter of the optic nerve sheath and integrate
+it with a portable ultrasound system to automatically report elevated
+intracranial pressure without the need of manually measuring the optic nerve
+sheath diameter. The ultimate goal is a system that is easy to use and does not
+require expert personnel or specific training to diagnose TBI.    
 
 Using ultrasound for estimation of optic nerve sheath diameter is a well
 establish approach to diagnose elevated intracranial
@@ -103,6 +104,11 @@ delineates the location of they eye and the red bars are the result of fitting
 the boundary of the acoustic shadow induced by the optic nerve sheath.
 }
 \end{figure}
+
+The algorithm is implemented in C++ and is available on
+github\footnote{https://github.com/KitwareMedical/UltrasoundOpticNerveEstimation}.
+The user-interface described in Section~\ref{sec:gui} is also avaialble on
+github\footnote{https://github.com/KitwareMedical/UltrasoundIntersonApps}.
 
 \subsection{Algorithm Details}
 \label{sec:details}
@@ -207,12 +213,12 @@ vertical bars to delineate the width of the shadow:
 \begin{figure}
 \centering
 \begin{tabular}{cccccc}
-\includegraphics[height=0.35in]{019-nerve.png} &
-\includegraphics[height=0.35in]{019-nerve-smooth.png} &
-\includegraphics[height=0.35in]{019-nerve-distance.png} &
-\includegraphics[height=0.35in]{019-nerve-scaled.png} &
-\includegraphics[height=0.35in]{019-nerve-thres.png} &         
-\includegraphics[height=0.35in]{019-nerve-moving.png} \\         
+\includegraphics[height=0.39in]{019-nerve.png} &
+\includegraphics[height=0.39in]{019-nerve-smooth.png} &
+\includegraphics[height=0.39in]{019-nerve-distance.png} &
+\includegraphics[height=0.39in]{019-nerve-scaled.png} &
+\includegraphics[height=0.39in]{019-nerve-thres.png} &         
+\includegraphics[height=0.39in]{019-nerve-moving.png} \\         
 (a) & (b) & (c) & (d) & (e) & (f)
 \end{tabular}
 \caption{
@@ -238,12 +244,16 @@ used to report estimates of the optic nerve sheath diameter in near real time
 as an ultrasound probe is swept across the closed eye of a patient. 
 \begin{figure}
 \centering
-\includegraphics[width=0.65\linewidth]{gui.jpg} 
+\begin{tabular}{cc}
+  \includegraphics[height=0.3\linewidth]{gui.jpg} &
+\includegraphics[height=0.3\linewidth]{OpticNerveUISreenshot.png} \\
+(a) & (b)
+\end{tabular}
 \caption{
 \label{fig:gui}
-The GUI collecting estimates on an eye phantom in real time. The GUI is running
-on a windows tablet connected to a USB linear array ultrasound probe from
-Interson.}
+The (a) GUI collecting estimates on an eye phantom in real time and (b) a
+close-up of the user interface. The GUI is running on a windows tablet
+connected to a USB linear array ultrasound probe from Interson.}
 \end{figure}
 
 

@@ -12,13 +12,20 @@
 % abbreviated title (for running head) also used for the TOC unless \toctitle is used
 %
 \author{
-Samuel Gerber,
-Maeliss Jallais,
+Samuel Gerber, 
+Maeliss Jallais, 
+Hastings Greer, 
+Matt McCormick, 
+Sean Montgomery, 
+Bradley Freeman,
+Deborah Kane, 
+Deepak Chittajallu, 
+Neal Siekierski, 
 Stephen Aylward
 }
 
 %
-\authorrunning{S. Gerber, M. Jallais and S. Aylward} % abbreviated author list (for running head)
+\authorrunning{S. Gerber et al.} % abbreviated author list (for running head)
 %
 %%%% list of authors for the TOC (use if author list has to be modified)
 %\tocauthor{}
@@ -61,7 +68,7 @@ reduces the mortality rate to 30\,\%~\cite{Se1981}.
 In a clinical setting, a non-invasive approach to measure intracranial pressure is
 by ocular ultrasound. From the ocular ultrasound image the physician manually
 measures the diameter of optic nerve sheath at a location 3\,mm behind the
-retina. A diameter of the optic nerve greater than 5mm indicates increased
+retina. A diameter of the optic nerve greater than 5\,mm indicates increased
 intracranial pressure~\cite{Ma2015}.  Acquiring such images and making these
 measurements is a challenging and time consuming task. We propose to automate
 the process of measuring the diameter of the optic nerve sheath and integrate
@@ -92,9 +99,9 @@ applicable to a wide variety of ocular ultrasound images.
 \begin{figure}
 \centering
 \begin{tabular}{ccc}
-\includegraphics[height=1.2in]{003-overlay.png} &
-\includegraphics[height=1.2in]{009-overlay.png} &
-\includegraphics[height=1.2in]{023-overlay.png} 
+\includegraphics[height=1.5in]{003-overlay.png} &
+\includegraphics[height=1.5in]{009-overlay.png} &
+\includegraphics[height=1.5in]{023-overlay.png} 
 \end{tabular}
 \caption{
 \label{fig:fitted}
@@ -123,7 +130,27 @@ vitreous body is frequently clearly delineated through the skin of the closed
 eye and the adjacent tissue. However, acoustic shadows, poor probe contact and
 collagen floaters cause imperfections in the boundary as well as the interior.
 Thus, the proposed eye detection algorithm requires several image processing
-steps: 
+steps illustrated in Figure~\ref{fig:algorithm-eye}.  
+\begin{figure}
+\centering
+\begin{tabular}{ccccc}
+\includegraphics[height=1.2in]{019.png} &
+\includegraphics[height=1.2in]{019-eye-smooth.png} &
+\includegraphics[height=1.2in]{019-eye-distance.png} &         
+\includegraphics[height=1.2in]{019-eye-moving.png} &
+\includegraphics[height=1.2in]{019-overlay.png}\\
+(a) & (b) & (c) & (d) & (e)
+\end{tabular}
+\caption{
+\label{fig:algorithm-eye}
+Intermediate steps to locate and estimate the size of the eye. (a) Input image,
+(b) Gaussian smoothing and threshold, (c) distance transform, (d) the ellipse
+image generated from the initial eye location and size estimates and (e) the
+registered ellipse and optic nerve sheath overlayed on the input image.
+}
+\end{figure}
+
+In detail the steps are: 
 \begin{enumerate}
 \item Estimate initial eye center and size:
   \begin{enumerate}
@@ -152,28 +179,8 @@ steps:
 \item Refine eye center and major and minor estimates by applying the transform to
       the minor and major axis vectors and the center point.
 \end{enumerate}
-Figure~\ref{fig:algorithm-eye} illustrates the algorithm for locating the
-vitreous body of the eye with several intermediate images of the individual
-steps. 
-\begin{figure}
-\centering
-\begin{tabular}{ccccc}
-\includegraphics[height=1.12in]{019.png} &
-\includegraphics[height=1.12in]{019-eye-smooth.png} &
-\includegraphics[height=1.12in]{019-eye-distance.png} &         
-\includegraphics[height=1.12in]{019-eye-moving.png} &
-\includegraphics[height=1.12in]{019-overlay.png}\\
-(a) & (b) & (c) & (d) & (e)
-\end{tabular}
-\caption{
-\label{fig:algorithm-eye}
-Intermediate steps to locate and estimate the size of the eye. (a) Input image,
-(b) Gaussian smoothing and threshold, (c) distance transform, (d) the ellipse
-image generated from the initial eye location and size estimates and (e) the
-registered ellipse and optic nerve sheath (from the nerve estimation algorithm)
-overlay on the input image.
-}
-\end{figure}
+
+
 
 The location of they eye provides an approximate region for locating the optic
 nerve sheath. The optic nerve sheath has a very strong acoustic impedance and
@@ -181,35 +188,10 @@ reflects a significant amount of the energy of the ultrasound wave. This
 results in an acoustic shadow that appears as a darker tube behind the optic
 nerve sheath.  We take advantage of this acoustic shadow to estimate the width
 the optic nerve.  The shadow boundary can exhibit several imperfections and
-have strong intensity variations. We propose the following image processing
-steps to enhance the shadow boundary before a registration of two parallel
-vertical bars to delineate the width of the shadow:
-\begin{enumerate}
-\item Extract optic nerve region below the eye using the eye location and size estimates
-\item Gaussian smoothing.
-\item Scaling of intensities per individual rows to alleviate attenuation effects.
-\item Compute initial center and width estimates:
-  \begin{enumerate}
-  \item Binary threshold, morphological opening and distance transform.
-  \item The maximal distance and its location provide and initial estimate of the
-          optic nerve shadow diameter and its location
-  \end{enumerate}
-\item Scale intensities per row and on each side of the initial optic nerve
-      center estimate independently (Often the left and right boundary exhibit
-      vastly different intensities). 
-\item Refine initial center and width estimates:
-  \begin{enumerate}
-  \item Binary threshold, morphological opening and distance transform.
-  \end{enumerate}
-\item Use refined initial center and width to create an image with two vertical bars. 
-\item Register the two vertical bars (fixed image) to the processed image (moving
-      image) under a similarity transform (rotation, translation and scaling)
-      with a masked mean squared error metric. The mask is a rectangle that
-      encompasses the two vertical bars. The similarity transform is centered on
-      the initial  center estimate.
-\item Refine width estimates by applying the registration transform to a vector
-      that spans from the left to the right vertical bar of the fixed image.
-\end{enumerate}
+have strong intensity variations.  We propose several image processing steps,
+illustrated in Figure~\ref{fig:algorithm-nerve}, to enhance the shadow boundary
+before a registration of two parallel vertical bars to delineate the width of
+the shadow.
 \begin{figure}
 \centering
 \begin{tabular}{cccccc}
@@ -227,10 +209,39 @@ Intermediate steps to fit the acoustic shadow of the optic nerve sheath. (a)
 Optic nerve sheath region extract based on the eye location and size estimates, (b)
 Gaussian smoothing and intensity scaling of individual rows, (c) Distance
 transform, (d) scaling of rows independently left and right of the initial
-center (e) thresholding and (f) vertical bars before registration based on intial
+center (e) thresholding and (f) vertical bars before registration based on initial
 estimates.
 }
 \end{figure}
+
+In detail, the optic nerve sheath estimation steps are:
+\begin{enumerate}
+\item Extract optic nerve region below the eye using the eye location and size estimates
+\item Gaussian smoothing.
+\item Scaling of intensities per individual rows to alleviate attenuation effects.
+\item Compute initial center and width estimates:
+  \begin{enumerate}
+  \item Binary threshold, morphological opening and distance transform.
+  \item The maximal distance and its location provide and initial estimate of the
+          optic nerve shadow diameter and its location
+  \end{enumerate}
+\item Scale intensities per row and on each side of the initial optic nerve
+      center estimate independently (Often the left and right boundary exhibit
+      vastly different intensities). 
+\item Refine initial center and width estimates:
+  \begin{enumerate}
+  \item Binary threshold, morphological opening and distance transform.
+  \end{enumerate}
+\item Use refined center and width to create an image with two vertical bars. 
+\item Register the two vertical bars (fixed image) to the processed image (moving
+      image) under a similarity transform (rotation, translation and scaling)
+      with a masked mean squared error metric. The mask is a rectangle that
+      encompasses the two vertical bars. The similarity transform is centered on
+      the initial  center estimate.
+\item Refine width estimates by applying the registration transform to a vector
+      that spans from the left to the right vertical bar of the fixed image.
+\end{enumerate}
+
 
 \subsection{Interactive Graphical User Interface}
 \label{sec:gui}
@@ -362,15 +373,15 @@ This evaluation is based on an eye phantom using 3D-printed “optic nerves”
 (plastic discs) of known diameter embedded under gelatine orbs as described in
 detail in~\cite{Ze2014}. The eye phantom produces ultrasound images that closely
 resemble clinical ocular ultrasound images.
-\begin{figure}
-\centering
-\includegraphics[width=0.6\linewidth]{phantom.jpg} 
-\caption{
-\label{fig:phantom}
-Gelatine phantom for acquiring ultrasound images with know ground truth optic
-nerve sheath diameters. 
-}
-\end{figure}
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.6\linewidth]{phantom.jpg} 
+%\caption{
+%\label{fig:phantom}
+%Gelatine phantom for acquiring ultrasound images with know ground truth optic
+%nerve sheath diameters. 
+%}
+%\end{figure}
 
 The goal of this evaluation is to check if an accurate estimate of the optic
 nerve is possible with the proposed algorithm. We imaged the phantom using the
@@ -407,9 +418,16 @@ Disc Size & Mean & Std. Deviation & Low.Quartile & Median & Up. Quartile \\
 \hline 
 \end{tabular}
 \end{table}
-A study on intra-operator variations of manual estimates on the same type of
-phantom, but with higher resolution ultrasound probes, reports an average bias
-of 0.33\,mm and standard deviations of 0.64\,mm of the
+The standard deviations of the individual measurements per disc are
+too large to accurately suggest elevated intracranial pressure. However, the
+mean deviation of the mean estimates from the ground truth over the 5
+measurements is only 0.2\,mm with a standard deviation of 0.18\,mm.  This suggest
+that the means reported by the automatic estimation procedure measurements are
+accurate enough to determine elevated intracranial pressure. In this small
+study the proposed algorithm yields more accurate results than reported in a
+study on intra-operator variations of manual estimates on the same type of
+phantom, but with higher resolution ultrasound probes, reports an
+average bias of 0.33\,mm and standard deviations of 0.64\,mm of the
 measurements~\cite{Jo2016}.  
 
 
@@ -424,10 +442,11 @@ swept over the eye. This will eliminate the need for the operator to view,
 interpret, or make measurements on an ultrasound image when using it to assess
 a dilated optic nerve sheath. Ultimately, we aim for a system that can be used
 by novice operators with minimal ultrasound experience. The system will report
-when a sufficient image has been acquired, and it will automatically determine
-if the diameter of the optic nerve is greater than 5mm, thereby indicating
-increased intracranial pressure associated with mild or more severe
-TBI~\cite{Ma2015}.
+when a sufficient number of high quality images have been acquired for an
+accurate estimate of the diameter. Based on this estimate it will be able to
+automatically indicate if the diameter of the optic nerve is greater than 5\,mm
+and alert the user elevated intracranial pressure.
+
 
 The long term goal is to develop a lightweight portable ultrasound
 system that, in addition to automated diagnosis of TBI, includes automatic
